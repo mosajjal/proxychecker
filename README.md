@@ -7,6 +7,7 @@ A (very) Simple Proxy checking tool written in Python3
 Create a file in the same directory as checker.py, fill it with ip:port (one line each), like this:
 
   127.0.0.1:8888
+  
   192.168.1.1:8080
   
 
