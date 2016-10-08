@@ -18,5 +18,5 @@ Simple enough,right?
 
 # Notes:
 
-1) For now, only HTTP proxies are supported.
-2) You can change the test URL to whatever you want in the script
+1. For now, only HTTP proxies are supported.
+2. You can change the test URL to whatever you want in the script
