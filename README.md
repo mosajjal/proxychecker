@@ -1,5 +1,5 @@
 # ProxyChecker
-A (very) Simple Proxy checking tool written in Python3
+A Simple Proxy checking tool written in Python3
 
 
 # Usage:
@@ -24,7 +24,8 @@ socket.socket = socks.socksocket
 ```
 NOTE: Remove `socket` from the original first line as well. 
 
-Simple enough,right? 
+# TODO:
+1. re-write it to use asyncio and scan multiple hosts at once
 
 # Notes:
 
