@@ -1,37 +1,49 @@
-import urllib2, socket
+import asyncio
 from sys import argv
 
+import aiohttp
 
-ProxyType = "http"
-TestURL = "http://www.google.com"
+proxy_type = "http"
+test_url = "http://www.google.com"
+timeout_sec = 4
 
-socket.setdefaulttimeout(180)
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 # read the list of proxy IPs in proxyList from the first Argument given
-script, filename = argv
+filename = argv[1]
 proxylistfile = open(filename)
 proxyList = proxylistfile.read().splitlines()
 
-def is_bad_proxy(ipport):    
-    try:        
-        proxy_handler = urllib2.ProxyHandler({ProxyType: ipport})        
-        opener = urllib2.build_opener(proxy_handler)
-        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        urllib2.install_opener(opener)        
-        req=urllib2.Request(TestURL)
-        sock=urllib2.urlopen(req)
-    except urllib2.HTTPError, e:        
-        print 'Error code: ', e.code
-        return e.code
-    except Exception, detail:
 
-        print "ERROR:", detail
-        return 1
-    return 0
+async def is_bad_proxy(ipport):
+    try:
+        session = aiohttp.ClientSession()
+        resp = await session.get(test_url, proxy=ipport, timeout=timeout_sec)
+        if not resp.headers["Via"]:
+            raise "Error"
+        print(bcolors.OKBLUE + "Working:", ipport + bcolors.ENDC)
+        session.close()
+    except:
+        session.close()
+        print(bcolors.FAIL + "Not Working:", ipport + bcolors.ENDC)
+
+tasks = []
+
+loop = asyncio.get_event_loop()
 
 for item in proxyList:
-    if is_bad_proxy(item):
-        print "Bad Proxy", item
-    else:
-        print "working" , item
+    tasks.append(asyncio.ensure_future(is_bad_proxy("http://" + item)))
+
+print(bcolors.HEADER + "Starting... \n" + bcolors.ENDC)
+loop.run_until_complete(asyncio.wait(tasks))
+print(bcolors.HEADER + "\n...Finished" + bcolors.ENDC)
+loop.close()
