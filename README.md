@@ -12,7 +12,7 @@ Create a file in the same directory as checker.py, fill it with ip:port (one lin
 
 Save it (e.g. list.txt), then call the script like this:
 
-  $ python checker.py list.txt
+  $ python3 checker.py list.txt
 
 For you Tor lovers, we can do all these behind tor proxy. First install PySocks (`pip install pysocks`), then add these BEFORE THE FIRST LINE:
 
